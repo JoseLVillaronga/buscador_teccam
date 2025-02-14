@@ -11,7 +11,7 @@ API local para realizar búsquedas en Internet utilizando DuckDuckGo. Proporcion
 
 1. Clonar o descargar este repositorio y navegar al directorio del proyecto:
 ```bash
-cd buscador-teccam
+cd buscador_teccam
 ```
 
 2. Crear y activar un entorno virtual:
