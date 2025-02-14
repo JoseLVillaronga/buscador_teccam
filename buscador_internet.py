@@ -124,11 +124,11 @@ def buscar_imagenes(consulta, max_resultados=5):
     for res in resultados_lista:
         resultados.append({
             "height": res.get("height"),
-            "image": res.get("image"),
-            "source": res.get("source"),
+            "imagen": res.get("image"),
+            "fuente": res.get("source"),
             "thumbnail": res.get("thumbnail"),
-            "title": res.get("title"),
-            "url": res.get("url"),
+            "titulo": res.get("title"),
+            "enlace": res.get("url"),
             "width": res.get("width")
         })
     
