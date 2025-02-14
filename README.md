@@ -1,11 +1,21 @@
 # Buscador TecCam API
 
-API local para realizar búsquedas en Internet utilizando DuckDuckGo. Proporciona endpoints para búsqueda general, noticias, imágenes y videos.
+API local para realizar búsquedas en Internet utilizando DuckDuckGo. Proporciona endpoints para búsqueda general, noticias, imágenes y videos. Soporta configuración de proxy para entornos corporativos.
+
+## Características
+
+- Búsqueda general de texto
+- Búsqueda específica de noticias, imágenes y videos
+- Soporte para proxy HTTP/HTTPS
+- Configurable mediante variables de entorno
+- Instalable como servicio del sistema
+- API RESTful
 
 ## Requisitos Previos
 
 - Python 3.x
 - Acceso a sudo sin contraseña para la instalación del servicio
+- Conexión a Internet (directa o mediante proxy)
 
 ## Instalación
 
@@ -25,17 +35,75 @@ source ./venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Instalar como servicio (opcional):
+4. Configurar el entorno:
+```bash
+# Copiar el archivo de configuración de ejemplo
+cp .env.example .env
+
+# Editar el archivo .env con tu configuración
+nano .env
+```
+
+5. Instalar como servicio (opcional):
 ```bash
 chmod +x install_service.sh
 ./install_service.sh
+```
+
+## Configuración
+
+### Variables de Entorno
+
+El sistema utiliza un archivo `.env` para la configuración. Las variables disponibles son:
+
+#### Configuración del Proxy
+```env
+PROXY_HOST=proxy.example.com    # Host del proxy
+PROXY_PORT=8080                 # Puerto del proxy
+PROXY_USER=                     # Usuario del proxy (opcional)
+PROXY_PASS=                     # Contraseña del proxy (opcional)
+```
+
+#### Configuración de la API
+```env
+API_HOST=localhost              # Host donde se ejecutará la API
+API_PORT=5008                   # Puerto para la API
+API_DEBUG=False                # Modo debug (True/False)
+```
+
+### Ejemplos de Configuración
+
+1. **Sin Proxy**:
+```env
+PROXY_HOST=
+PROXY_PORT=
+API_HOST=localhost
+API_PORT=5008
+```
+
+2. **Con Proxy Simple**:
+```env
+PROXY_HOST=proxy.empresa.com
+PROXY_PORT=8080
+API_HOST=localhost
+API_PORT=5008
+```
+
+3. **Con Proxy Autenticado**:
+```env
+PROXY_HOST=proxy.empresa.com
+PROXY_PORT=8080
+PROXY_USER=usuario
+PROXY_PASS=contraseña
+API_HOST=localhost
+API_PORT=5008
 ```
 
 ## Uso
 
 ### Como Servicio
 
-Si has instalado la API como servicio, estará disponible automáticamente en `http://localhost:5008`. El servicio se inicia automáticamente con el sistema.
+Si has instalado la API como servicio, estará disponible automáticamente en `http://localhost:5008` (o en el puerto configurado en `.env`). El servicio se inicia automáticamente con el sistema.
 
 Comandos útiles para gestionar el servicio:
 ```bash
@@ -98,101 +166,32 @@ curl "http://localhost:5008/api/buscar?q=python&max_results=5"
 
 # Búsqueda de noticias
 curl "http://localhost:5008/api/buscar/noticias?q=tecnologia&max_results=5"
-
-# Búsqueda de imágenes
-curl "http://localhost:5008/api/buscar/imagenes?q=paisajes&max_results=5"
-
-# Búsqueda de videos
-curl "http://localhost:5008/api/buscar/videos?q=tutoriales&max_results=5"
 ```
 
-## Estructura de Respuestas
+## Solución de Problemas
 
-Cada tipo de búsqueda devuelve un JSON con estructura específica:
+### Problemas con el Proxy
 
-### Búsqueda General
-```json
-{
-  "consulta": "texto_buscado",
-  "resultados": {
-    "resultado_1": {
-      "titulo": "...",
-      "enlace": "...",
-      "descripcion": "..."
-    }
-  }
-}
-```
+1. **Error de conexión al proxy**:
+   - Verificar que PROXY_HOST y PROXY_PORT sean correctos
+   - Comprobar conectividad al proxy: `curl -v -x proxy.empresa.com:8080 http://example.com`
 
-### Búsqueda de Noticias
-```json
-{
-  "consulta": "texto_buscado",
-  "resultados": {
-    "resultado_1": {
-      "titulo": "...",
-      "enlace": "...",
-      "descripcion": "...",
-      "fecha": "...",
-      "fuente": "...",
-      "imagen": "..."
-    }
-  }
-}
-```
+2. **Error de autenticación**:
+   - Verificar que PROXY_USER y PROXY_PASS sean correctos
+   - Asegurarse de que las credenciales tengan los permisos necesarios
 
-### Búsqueda de Imágenes
-```json
-{
-  "consulta": "texto_buscado",
-  "resultados": {
-    "resultado_1": {
-      "titulo": "...",
-      "enlace": "...",
-      "imagen_url": "...",
-      "thumbnail": "...",
-      "fuente": "...",
-      "altura": "...",
-      "anchura": "..."
-    }
-  }
-}
-```
+3. **Timeout en las búsquedas**:
+   - Verificar la conectividad general del proxy
+   - Comprobar si hay restricciones de acceso a DuckDuckGo
 
-### Búsqueda de Videos
-```json
-{
-  "consulta": "texto_buscado",
-  "resultados": {
-    "resultado_1": {
-      "titulo": "...",
-      "enlace": "...",
-      "descripcion": "...",
-      "duracion": "...",
-      "autor": "...",
-      "thumbnail": "...",
-      "vistas": "..."
-    }
-  }
-}
-```
+### Problemas del Servicio
 
-## Uso como Librería
+1. **El servicio no inicia**:
+   - Verificar los logs: `sudo journalctl -u buscador-teccam.service`
+   - Comprobar la configuración en `.env`
+   - Verificar permisos del directorio y archivos
 
-También puedes usar las funciones de búsqueda directamente en tu código Python:
-
-```python
-import buscador_internet as bi
-
-# Búsqueda general
-resultados = bi.buscar("python programming")
-
-# Búsqueda de noticias
-noticias = bi.buscar_noticias("tecnología")
-
-# Búsqueda de imágenes
-imagenes = bi.buscar_imagenes("paisajes")
-
-# Búsqueda de videos
-videos = bi.buscar_videos("tutoriales python")
-```
+2. **Error al cargar la configuración**:
+   - Verificar que existe el archivo `.env`
+   - Comprobar permisos de lectura del archivo `.env`
+   - Validar el formato de las variables en `.env`

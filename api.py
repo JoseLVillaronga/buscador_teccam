@@ -1,5 +1,10 @@
 from flask import Flask, request, jsonify
 import buscador_internet as bi
+from dotenv import load_dotenv
+import os
+
+# Cargar variables de entorno
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -59,4 +64,7 @@ def home():
     """
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=5008, debug=True)
+    host = os.getenv('API_HOST', 'localhost')
+    port = int(os.getenv('API_PORT', 5008))
+    debug = os.getenv('API_DEBUG', 'False').lower() == 'true'
+    app.run(host=host, port=port, debug=debug)

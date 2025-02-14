@@ -1,5 +1,34 @@
 import sys
 import subprocess
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
+
+def get_proxy_config():
+    """
+    Obtiene la configuración del proxy desde las variables de entorno.
+    Retorna un diccionario con la configuración del proxy o None si no está configurado.
+    """
+    proxy_host = os.getenv('PROXY_HOST')
+    proxy_port = os.getenv('PROXY_PORT')
+    
+    if not proxy_host or not proxy_port:
+        return None
+    
+    proxy_user = os.getenv('PROXY_USER')
+    proxy_pass = os.getenv('PROXY_PASS')
+    
+    if proxy_user and proxy_pass:
+        proxy_url = f"http://{proxy_user}:{proxy_pass}@{proxy_host}:{proxy_port}"
+    else:
+        proxy_url = f"http://{proxy_host}:{proxy_port}"
+    
+    return {
+        'http': proxy_url,
+        'https': proxy_url
+    }
 
 def instalar_paquete(paquete):
     """
@@ -26,7 +55,8 @@ def buscar(consulta, max_resultados=5):
     :return: Diccionario con la consulta y los resultados.
     """
     try:
-        with DDGS() as ddgs:
+        proxies = get_proxy_config()
+        with DDGS(proxies=proxies) as ddgs:
             resultados_generador = ddgs.text(consulta, max_results=max_resultados)
             resultados_lista = list(resultados_generador)
     except Exception as e:
@@ -52,7 +82,8 @@ def buscar_noticias(consulta, max_resultados=5):
     :return: Diccionario con la consulta y los resultados.
     """
     try:
-        with DDGS() as ddgs:
+        proxies = get_proxy_config()
+        with DDGS(proxies=proxies) as ddgs:
             resultados_generador = ddgs.news(consulta, max_results=max_resultados)
             resultados_lista = list(resultados_generador)
     except Exception as e:
@@ -81,7 +112,8 @@ def buscar_imagenes(consulta, max_resultados=5):
     :return: Diccionario con la consulta y los resultados.
     """
     try:
-        with DDGS() as ddgs:
+        proxies = get_proxy_config()
+        with DDGS(proxies=proxies) as ddgs:
             resultados_generador = ddgs.images(consulta, max_results=max_resultados)
             resultados_lista = list(resultados_generador)
     except Exception as e:
@@ -111,7 +143,8 @@ def buscar_videos(consulta, max_resultados=5):
     :return: Diccionario con la consulta y los resultados.
     """
     try:
-        with DDGS() as ddgs:
+        proxies = get_proxy_config()
+        with DDGS(proxies=proxies) as ddgs:
             resultados_generador = ddgs.videos(consulta, max_results=max_resultados)
             resultados_lista = list(resultados_generador)
     except Exception as e:

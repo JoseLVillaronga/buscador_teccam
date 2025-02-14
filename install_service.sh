@@ -14,6 +14,18 @@ else
     echo "Entorno virtual encontrado."
 fi
 
+# Verificar que existe el archivo .env
+if [ ! -f "$INSTALL_DIR/.env" ]; then
+    echo "Archivo .env no encontrado. Copiando desde .env.example..."
+    if [ -f "$INSTALL_DIR/.env.example" ]; then
+        cp "$INSTALL_DIR/.env.example" "$INSTALL_DIR/.env"
+        echo "Por favor, edite el archivo .env con la configuración correcta del proxy."
+    else
+        echo "Error: No se encuentra .env.example"
+        exit 1
+    fi
+fi
+
 # Crear el archivo de servicio
 echo "Creando archivo de servicio..."
 SERVICE_FILE="[Unit]
@@ -25,6 +37,7 @@ Type=simple
 User=$CURRENT_USER
 WorkingDirectory=$INSTALL_DIR
 Environment=PATH=$INSTALL_DIR/venv/bin:$PATH
+EnvironmentFile=$INSTALL_DIR/.env
 ExecStart=$INSTALL_DIR/venv/bin/python $INSTALL_DIR/api.py
 Restart=always
 RestartSec=3
