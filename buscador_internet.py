@@ -109,7 +109,7 @@ def buscar_imagenes(consulta, max_resultados=5):
     
     :param consulta: Texto a buscar.
     :param max_resultados: Número máximo de resultados a obtener.
-    :return: Diccionario con la consulta y los resultados.
+    :return: Diccionario con la consulta y los resultados como lista.
     """
     try:
         proxies = get_proxy_config()
@@ -118,21 +118,21 @@ def buscar_imagenes(consulta, max_resultados=5):
             resultados_lista = list(resultados_generador)
     except Exception as e:
         print(f"Ocurrió un error durante la búsqueda de imágenes: {e}")
-        return {"consulta": consulta, "resultados": {}}
+        return {"consulta": consulta, "resultados": []}
     
-    resultados_dict = {}
-    for i, res in enumerate(resultados_lista, start=1):
-        resultados_dict[f"resultado_{i}"] = {
-            "titulo": res.get("title", "Sin título"),
-            "enlace": res.get("link", "Sin enlace"),
-            "imagen_url": res.get("image", "Sin URL de imagen"),
-            "thumbnail": res.get("thumbnail", "Sin thumbnail"),
-            "fuente": res.get("source", "Fuente desconocida"),
-            "altura": res.get("height", "Desconocida"),
-            "anchura": res.get("width", "Desconocida")
-        }
+    resultados = []
+    for res in resultados_lista:
+        resultados.append({
+            "height": res.get("height"),
+            "image": res.get("image"),
+            "source": res.get("source"),
+            "thumbnail": res.get("thumbnail"),
+            "title": res.get("title"),
+            "url": res.get("url"),
+            "width": res.get("width")
+        })
     
-    return {"consulta": consulta, "resultados": resultados_dict}
+    return {"consulta": consulta, "resultados": resultados}
 
 def buscar_videos(consulta, max_resultados=5):
     """
