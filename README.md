@@ -132,40 +132,31 @@ python api.py
 
 ### Endpoints Disponibles
 
-1. **Búsqueda General**
-```
-GET http://localhost:5008/api/buscar?q=texto&max_results=5
-```
+La API expone los siguientes endpoints para búsquedas en Internet. Puedes probarlos directamente desde tu navegador o con herramientas como `curl`.
 
-2. **Búsqueda de Noticias**
-```
-GET http://localhost:5008/api/buscar/noticias?q=texto&max_results=5
-```
+| Tipo      | Endpoint                                 | Descripción                | Ejemplo de uso                                                                 |
+|-----------|------------------------------------------|----------------------------|--------------------------------------------------------------------------------|
+| General   | `/api/buscar?q=python`                   | Búsqueda general de texto  | [Abrir](http://localhost:5008/api/buscar?q=python)                             |
+| Noticias  | `/api/buscar/noticias?q=ciencia`         | Búsqueda de noticias       | [Abrir](http://localhost:5008/api/buscar/noticias?q=ciencia)                   |
+| Imágenes  | `/api/buscar/imagenes?q=gatos`           | Búsqueda de imágenes       | [Abrir](http://localhost:5008/api/buscar/imagenes?q=gatos)                     |
+| Videos    | `/api/buscar/videos?q=robotica`          | Búsqueda de videos         | [Abrir](http://localhost:5008/api/buscar/videos?q=robotica)                    |
 
-3. **Búsqueda de Imágenes**
-```
-GET http://localhost:5008/api/buscar/imagenes?q=texto&max_results=5
-```
+#### Parámetros
 
-4. **Búsqueda de Videos**
-```
-GET http://localhost:5008/api/buscar/videos?q=texto&max_results=5
-```
+- `q` (**requerido**): Texto a buscar
+- `max_results` (**opcional**, default=5): Número máximo de resultados
 
-### Parámetros
+#### Ejemplos de Uso con curl
 
-- `q`: (requerido) Texto a buscar
-- `max_results`: (opcional, default=5) Número máximo de resultados
-
-### Ejemplos de Uso
-
-Usando curl:
 ```bash
-# Búsqueda general
-curl "http://localhost:5008/api/buscar?q=python&max_results=5"
+# Buscar noticias sobre inteligencia artificial
+curl "http://localhost:5008/api/buscar/noticias?q=inteligencia+artificial&max_results=3"
 
-# Búsqueda de noticias
-curl "http://localhost:5008/api/buscar/noticias?q=tecnologia&max_results=5"
+# Buscar imágenes de gatos
+curl "http://localhost:5008/api/buscar/imagenes?q=gatos"
+
+# Buscar en navegador
+# http://localhost:5008/api/buscar?q=python
 ```
 
 ## Solución de Problemas
