@@ -1,6 +1,7 @@
 # Buscador TecCam API
 
 API local para realizar búsquedas en Internet utilizando DuckDuckGo. Proporciona endpoints para búsqueda general, noticias, imágenes y videos. Soporta configuración de proxy para entornos corporativos.
+![ChatGPT Image 17 abr 2025, 15_49_56](https://github.com/user-attachments/assets/2f63cc81-fda0-49fe-9944-06da738963ee)
 
 ## Características
 
